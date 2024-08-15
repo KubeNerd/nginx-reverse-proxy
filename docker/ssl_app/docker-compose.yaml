@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+    container_name: flask_app
+    networks:
+      - flask_network
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - app
+
+    networks:
+      - flask_network
+
+networks:
+  flask_network:
+    driver: bridge
